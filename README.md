@@ -1,1 +1,1 @@
-# bootcamp_-Yuqing-_-Yan-
+# bootcamp_Yuqing_Yan
