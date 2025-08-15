@@ -69,4 +69,7 @@ Goal → Stage → Deliverable
 /docs/
 bls_mapping.md
 release_calendar.ics
-...
+**Update Cadence:**  
+- 10th monthly: Full pipeline run  
+- Wednesdays: Data validation checks  
+- Quarterly: Methodology review  
