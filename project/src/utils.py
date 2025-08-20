@@ -17,3 +17,17 @@ def analyze_numeric(df, group_col=None):
         stats.loc['range'] = stats.loc['max'] - stats.loc['min']
     
     return stats
+
+def parse_date_column(df, column, date_format=None):
+    """
+    Parse a column in a DataFrame to datetime.
+    Args:
+        df (pd.DataFrame): Input DataFrame
+        column (str): Column name to parse
+        date_format (str, optional): Custom date format
+    Returns:
+        pd.DataFrame: DataFrame with parsed date column
+    """
+    df = df.copy()
+    df[column] = pd.to_datetime(df[column], format=date_format, errors='coerce')
+    return df

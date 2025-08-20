@@ -1,75 +1,56 @@
-# Inflation Dynamics Monitoring System
+# Stock Insights: Predicting Apple Stock Trends with Data Science
 **Stage:** Problem Framing & Scoping (Stage 01)
 
 ## Problem Statement
-Current inflation reporting often fails to distinguish between temporary fluctuations and persistent trends, risking policy errors. For example, the Federal Reserve's delayed response to 2021 inflation resulted from over-reliance on headline CPI without analyzing sectoral drivers (Bernanke & Blanchard, 2023). This project creates an automated pipeline using Yahoo Finance's free API to:  
-- Detect early signs of inflation acceleration/deceleration through 3-month annualized momentum metrics  
-- Identify divergent trends between goods (PPI-sensitive) and services (wage-sensitive) inflation  
-- Assess trend persistence using rolling volatility measures  
-The system will help policymakers avoid two costly errors: tightening too late (letting inflation embed) or too early (unnecessary recessions).
+Individual investors often lack the tools and expertise to analyze stock price trends and make data-driven predictions. This project addresses the challenge by building a reproducible pipeline that automatically collects, cleans, and analyzes daily stock data for Apple Inc. (AAPL) for the year 2023. The goal is to uncover historical price patterns, detect anomalies, and build a regression model to forecast future prices, thereby supporting smarter investment decisions.
 
 ## Stakeholder & User
-- **Decision-makers:**  
-  - FOMC voting members (set interest rates)  
-  - Treasury debt management officials (adjust TIPS issuance)  
-- **Primary Users:**  
-  - Central bank research staff (prepare briefing materials)  
-  - Bond market strategists (position duration exposure)  
-- **Timing:**  
-  - Data updates within 24 hours of BLS releases (10th each month)  
-  - Alert triggers when:  
-    - 3-mo momentum crosses ±1.5σ threshold  
-    - Goods-services spread widens >200bps
+- **Stakeholder:** Retail investors, financial bloggers, and educators seeking to empower individuals with better stock analytics.
+- **User:** Individual investors who want to track, analyze, and forecast Apple stock performance as part of their investment workflow. Users interact with the output via notebooks, dashboards, or reports, typically before making buy/sell/hold decisions.
 
 ## Useful Answer & Decision
-- **Type:** Descriptive analytics with early-warning signals  
-- **Metrics:**  
-  - `Inflation Persistence Score` (rolling 6-mo autocorrelation)  
-  - `Sectoral Divergence Index` (goods vs services impact)  
-- **Artifacts:**  
-  - Interactive Bokeh dashboard (inflation_nowcasting.html): displays CPI/PPI trends, sectoral breakdowns, and highlights early-warning signals for accelerating or decelerating inflation.
-  - PDF summary report (inflation_trend_report.pdf): concise tear sheet summarizing trend regimes, sector-specific contributions, and notable regime shifts for policy or market use
-- **Decision Impact:** Guides:  
-  - Fed funds rate adjustments  
-  - TIPS vs nominal Treasury issuance mix 
+- **Descriptive:** What are the historical trends, volatility, and outliers in AAPL stock prices in 2023?
+- **Predictive:** What is the expected closing price of AAPL in the next week/month, based on regression analysis?
+- **Artifact:** Cleaned dataset, EDA visualizations, and a regression-based price prediction notebook. These outputs help users understand past performance and make informed buy/sell/hold decisions.
 
 ## Assumptions & Constraints
-- **Data:**
-  - Yahoo Finance maintains accurate CPI/PPI mappings (^CPIAUCSL, ^PPIACO)
-  - Minimum 20-year history available for regime analysis
-- **Analytical:**
-  - Excludes food/energy volatility via core CPI focus
+- Data is sourced from Yahoo Finance via yfinance, covering only daily OHLCV for AAPL in 2023.
+- Missing values in numeric columns are filled with the median; columns with >50% missing are dropped.
+- Outliers are detected using the IQR method and visualized with boxplots; extreme outliers may be removed or flagged.
+- Data is assumed accurate as provided by the API; API access may be rate-limited or temporarily unavailable.
+- The pipeline is for educational and personal use, not for professional trading.
 
 ## Known Unknowns / Risks
-- **Data Revisions Risk:** BLS back-revisions may alter trends → Maintain versioned raw data  
-- **Proxy Accuracy:** Yahoo Finance vs BLS direct feeds → Weekly validation checks  
-- **Structural Breaks:** COVID-era distortions → Manual override capability  
-- **Geopolitical Shocks:** Sanctions impacts → Event annotation system  
+- API outages, changes, or deprecation.
+- Missing or inconsistent data for certain dates.
+- Unforeseen market events (e.g., splits, mergers) not reflected in the data.
+- Model overfitting due to limited features or short timeframes.
+- User misinterpretation of analytics as financial advice.
 
 ## Lifecycle Mapping
 Goal → Stage → Deliverable
-- Problem Framing & Scoping → Stage 01 → Data dictionary & methodology doc  
-- Build data pipeline → Stage 02 → yfinance collector with error handling  
-- Develop analytics → Stage 03 → Notebook with:  
-  - Momentum detection  
-  - Sectoral decomposition  
-- Deploy monitoring → Stage 04 → AWS Lambda scheduler  
-- Refine alerts → Stage 05 → Markov regime switching model 
+- Model problem with objective → Problem Framing & Scoping (Stage 01) → Data dictionary & methodology doc
+- Constracture project environment → Tooling Setup (Stage 02) → yfinance collector with error handling, .gitignore, .env.example
+- Achieve fundamental data-analyzing tools → Python Fundamentals (Stage 03) → Notebook with: momentum detection, sectoral decomposition
+- Collect and store reliable stock data → Data Acquisition/Ingestion (Stage 04) → Raw CSV file
+- Organize and validate data → Data Storage (Stage 05) → Raw/processed folders, format checks
+- Clean and prepare data → Data Preprocessing (Stage 06) → Cleaning scripts, visual comparison
+- Detect anomalies → Outlier Analysis (Stage 07) → Outlier report, boxplots
+- Uncover trends and build predictive model → EDA & Modeling (Stage 08+) → EDA notebook, regression notebook, forecast artifact
 
 ## Repo Plan
-/data/
-/raw/YYYYMMDD_CPI.csv
-/processed/features.parquet
-/src/
-/data/collector.py
-/analysis/regime_detection.py
-/notebooks/
-01_data_validation.ipynb
-02_trend_analysis.ipynb
-/docs/
-bls_mapping.md
-release_calendar.ics
-**Update Cadence:**  
-- 10th monthly: Full pipeline run  
-- Wednesdays: Data validation checks  
-- Quarterly: Methodology review  
+- `/data/raw/`, `/data/processed/`: Store raw and cleaned stock data (CSV/Parquet)
+- `/src/`: Acquisition, cleaning, and utility scripts (e.g., `acquisition.py`, `cleaning.py`, `utils.py`)
+- `/notebooks/`: Jupyter notebooks for each project stage (acquisition, cleaning, EDA, regression, etc.)
+- `/docs/`: Project documentation and slides
+- `.gitignore`, `.env.example`: Ensure secrets and local configs are not committed
+- **Update cadence:** Weekly during bootcamp, or as new features/data sources are added
+
+## Data Cleaning Strategy
+Use a modular and reproducible pipeline for data cleaning, implemented in `src/cleaning.py`:
+- **Filling missing values:** Numeric columns are filled with the median (robust to outliers).
+- **Dropping columns:** Columns with >50% missing values are dropped.
+- **Scaling:** Numeric features are scaled to [0, 1] for comparability.
+- **Outlier detection:** IQR method is used to flag or remove extreme values.
+- **Visual comparison:** Distributions and missingness are visualized before and after cleaning.
+All cleaning steps are implemented as reusable functions, ensuring transparency and reproducibility for future datasets.
