@@ -36,7 +36,16 @@ Goal → Stage → Deliverable
 - Organize and validate data → Data Storage (Stage 05) → Raw/processed folders, format checks
 - Clean and prepare data → Data Preprocessing (Stage 06) → Cleaning scripts, visual comparison
 - Detect anomalies → Outlier Analysis (Stage 07) → Outlier report, boxplots
-- Uncover trends and build predictive model → EDA & Modeling (Stage 08+) → EDA notebook, regression notebook, forecast artifact
+- Exploratory Data Analysis (Stage 08)
+    - Visualized distributions of Close, Volume, and High prices.
+    - Identified right-skew and outliers in price and volume.
+    - Explored relationships (e.g., Close vs Volume, Close over time).
+    - Noted weak seasonality, presence of volatility clusters, and implications for feature engineering.
+- Feature Engineering (Stage 09)
+    - Created `price_range` (High - Low) to capture daily volatility, based on EDA insights.
+    - Created `close_ma_5_prev` (5-day moving average of Close, using only past data) to capture short-term trend.
+    - Set target as next day's close (`close_next`).
+    - Documented rationale and checked correlation/plots with target.
 
 ## Repo Plan
 - `/data/raw/`, `/data/processed/`: Store raw and cleaned stock data (CSV/Parquet)
