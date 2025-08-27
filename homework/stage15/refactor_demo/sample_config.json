@@ -1,0 +1,8 @@
+{
+    "moving_average_window": 5,
+    "volatility_window": 20,
+    "price_range_enabled": true,
+    "lagged_features_enabled": true,
+    "validation_enabled": true,
+    "target_variable": "close_next"
+  }
